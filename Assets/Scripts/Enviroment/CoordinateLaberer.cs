@@ -30,7 +30,7 @@ public class CoordinateLaberer : MonoBehaviour
     {
         Vector2Int coordinates = new(
             Mathf.RoundToInt(this.transform.parent.position.x),
-            Mathf.RoundToInt(this.transform.parent.position.z)); 
+            Mathf.RoundToInt(this.transform.parent.position.z));
 
         _label.text = $"({coordinates.x};{coordinates.y})";
 
@@ -48,7 +48,7 @@ public class CoordinateLaberer : MonoBehaviour
     private void ToogleLabels()
     {
         if (Input.GetKeyDown(KeyCode.C))
-            foreach (var text in FindObjectsOfType<TextMeshPro>())
+            foreach (var text in GetComponentsInParent<TextMeshPro>())
                 text.enabled = !text.enabled;
     }
 }

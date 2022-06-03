@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Enemy))]
 public class EnemyMover : MonoBehaviour
 {
     [SerializeField] [Range(0f, 5f)] private float _speed;
 
     private List<Waypoint> _path = new();
+    private Enemy _enemy;
 
     private void OnEnable()
     {
@@ -15,14 +17,21 @@ public class EnemyMover : MonoBehaviour
         StartCoroutine(FollowPath());
     }
 
+    private void Start() => _enemy = GetComponent<Enemy>();
+
     private void FindPath()
     {
         _path.Clear();
 
-        GameObject[] waypoints = GameObject.FindGameObjectsWithTag("Path");
+        GameObject parent = GameObject.FindGameObjectWithTag("Path");
 
-        foreach (var waypoint in waypoints)
-            _path.Add(waypoint.GetComponent<Waypoint>());
+        foreach (Transform child in parent.transform)
+        {
+            Waypoint waypoint = child.GetComponent<Waypoint>();
+
+            if (waypoint is not null)
+                _path.Add(waypoint);
+        }
     }
 
     private void ReturnToStart() => this.transform.position = _path[0].transform.position;
@@ -45,6 +54,7 @@ public class EnemyMover : MonoBehaviour
             }
         }
 
+        _enemy.Steal();
         this.gameObject.SetActive(false);
     }
 }
